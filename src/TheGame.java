@@ -20,13 +20,13 @@ public class TheGame extends Frame {
 	}
 	
 	public void paint(Graphics g){
-		Iterator<Polygon> hexes = b.iterator();
+		Iterator<GameTile> hexes = b.iterator();
 		int i = 0;
 		while (hexes.hasNext()){
 			if (i%3==0) g.setColor(Color.GREEN);
 			else if (i%3 ==1) g.setColor(Color.YELLOW);
 			else g.setColor(Color.RED);
-			Polygon p = hexes.next();
+			Polygon p = hexes.next().shape;
 			g.fillPolygon(p);
 			g.setColor(Color.BLACK);
 			g.drawPolygon(p);

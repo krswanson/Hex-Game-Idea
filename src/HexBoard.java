@@ -5,7 +5,7 @@ public class HexBoard {
 
 	protected Polygon p;
 	//The board is setup [column][row] but just use the get method
-	protected Polygon[][] board;
+	protected GameTile[][] board;
 	protected int h, w, columns;
 	
 	public HexBoard(int[] perCol, int winW, int winH){
@@ -14,8 +14,7 @@ public class HexBoard {
 	
 	public HexBoard(int[] perCol, int winW, int winH, int hexW, int hexH){
 		columns = perCol.length;
-		//hexes = new Vector<Polygon>(columns*4);
-		board = new Polygon[columns][];
+		board = new GameTile[columns][];
 		h = hexH;
 		w = hexW;
 		int[] xpoints = {w/4,w-w/4,w,w-w/4,w/4,0};
@@ -27,10 +26,10 @@ public class HexBoard {
 		//Each row array has its own length
 		int i, correction = 0;
 		for (int j = 0; j < columns; j++){
-			Polygon[] thisCol = new Polygon[perCol[j]];
+			GameTile[] thisCol = new GameTile[perCol[j]];
 			for (i = 0; i < perCol[j]; i++){
 				p.translate(0, h);
-				thisCol[i] = new Polygon(p.xpoints, p.ypoints, p.npoints);
+				thisCol[i] = new GameTile(new Polygon(p.xpoints, p.ypoints, p.npoints));
 			}
 			board[j] = thisCol;
 			
@@ -44,14 +43,14 @@ public class HexBoard {
 		}
 	}
 	
-	public Polygon get(int row, int col){
+	public GameTile get(int row, int col){
 		return board[col][row];
 	}
 	
 	public boolean removeHex(int row, int col){
 		if (row >= board[col].length) return false;
-		Polygon[] temp = board[col];
-		board[col] = new Polygon[board[col].length-1];
+		GameTile[] temp = board[col];
+		board[col] = new GameTile[board[col].length-1];
 		int t = 0, b = 0;
 		while (b < board[col].length){
 			if (t == row){
@@ -69,11 +68,11 @@ public class HexBoard {
 		System.out.println("The method compress current does nothing.");
 	}
 	
-	public Iterator<Polygon> iterator(){
+	public Iterator<GameTile> iterator(){
 		return new BoardIterator();
 	}
 	
-	protected class BoardIterator implements Iterator<Polygon>{
+	protected class BoardIterator implements Iterator<GameTile>{
 		int row, col;
 		
 		public BoardIterator(){
@@ -93,9 +92,9 @@ public class HexBoard {
 		}
 
 		@Override
-		public Polygon next() {
+		public GameTile next() {
 			ensureRow();
-			Polygon current = board[col][row];	
+			GameTile current = board[col][row];	
 			row++;
 			return current;
 		}
@@ -113,15 +112,4 @@ public class HexBoard {
 			}
 		}
 	}
-		
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-
-	
 }
