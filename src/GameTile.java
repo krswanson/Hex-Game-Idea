@@ -1,12 +1,12 @@
 import java.awt.Color;
 import java.awt.Polygon;
 
-
-public class GameTile {
+public class GameTile implements GamePiece {
 
 	protected Polygon shape;
-	protected Color color = Color.white;
+	public Color color = Color.white;
 	protected String typeName = "";
+	protected int layer = 0;
 	
 	public GameTile(Polygon theShape){
 		this(theShape, theShape.xpoints[0], theShape.ypoints[0]);
@@ -22,7 +22,7 @@ public class GameTile {
 		this.shape = new Polygon(ArrayHelp.shiftAll(tile.shape.xpoints, 0), 
 				ArrayHelp.shiftAll(tile.shape.ypoints, 0), tile.shape.npoints);
 		setName(tile.getName());
-		setColor(tile.getColor());
+		this.color = tile.color;
 	}
 	
 	public boolean equals(GameTile other){
@@ -42,17 +42,17 @@ public class GameTile {
 	}
 	
 	public boolean sameType(GameTile other){
-		return this.color.equals(other.getColor()) && 
+		return this.color.equals(other.color) && 
 			this.typeName.compareTo(other.getName()) == 0 &&
 			sameShape(other);
 	}
 	
-	public Color getColor(){
-		return color;
+	public Polygon getShape(){
+		return shape;
 	}
 	
-	public void setColor(Color c){
-		color = c;
+	public void setShape(Polygon p){
+		shape = p;
 	}
 	
 	public String getName(){
@@ -63,13 +63,30 @@ public class GameTile {
 		typeName = tileType;
 	}
 	
+	public Color getColor(){
+		return color;
+	}
+	
+	public void setColor(Color c){
+		color = c;
+	}
+	
+	public int getLayer(){
+		return layer;
+	}
+	
+	public void setLayer(int layer){
+		this.layer = layer;
+	}
+	
 	public static void main(String[] a){
 		GameTile t = new GameTile(new Polygon(new int[] {1,2,0}, new int[] {0,1,1}, 3),4, 4);
 		GameTile u = new GameTile(new Polygon(new int[] {1,2,0}, new int[] {0,1,1}, 3),3, 4);
 		t.setName("red");
 		u.setName("red");
 		GameTile v = new GameTile(u);
-		v.shape.xpoints = ArrayHelp.shiftAll(v.shape.xpoints,2);
+		//v.shape.xpoints = ArrayHelp.shiftAll(v.shape.xpoints,2);
+		v.color = Color.black;
 		System.out.println(u.equals(t));
 		System.out.println(u.sameType(t));
 		System.out.println(u.equals(v));
