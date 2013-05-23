@@ -6,7 +6,7 @@ public class HexBoard {
 	protected Polygon p;
 	//The board is setup [column][row] but just use the get method
 	protected GameTile[][] board;
-	protected int h, w, columns;
+	protected int h, w, columns, tiles = 0;
 	
 	public HexBoard(int[] perCol, int winW, int winH){
 		this(perCol, winW, winH, 40, 32);
@@ -30,6 +30,7 @@ public class HexBoard {
 			for (i = 0; i < perCol[j]; i++){
 				p.translate(0, h);
 				thisCol[i] = new GameTile(new Polygon(p.xpoints, p.ypoints, p.npoints));
+				tiles++;
 			}
 			board[j] = thisCol;
 			
@@ -61,13 +62,18 @@ public class HexBoard {
 			t++;
 			b++;
 		}
-		return board[col].length < temp.length;
+		tiles--;
+		return true;
 	}
 	
 	public void compress(){
+		//TODO
 		System.out.println("The method compress current does nothing.");
 	}
 	
+	public int size(){
+		return tiles;
+	}
 	public Iterator<GameTile> iterator(){
 		return new BoardIterator();
 	}
