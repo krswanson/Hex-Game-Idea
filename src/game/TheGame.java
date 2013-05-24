@@ -1,10 +1,13 @@
+package game;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Polygon;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.PriorityQueue;
-
+import utilities.*;
 
 
 @SuppressWarnings("serial")
@@ -12,13 +15,26 @@ public class TheGame extends Frame {
 
 	protected int W = 500, H = 250;
 	protected HexBoard b = new HexBoard(new int[] {2,3,3,3,4,5,4,3,3,3,2}, W, H);
-	protected GameTile t = new GameTile(new Polygon(new int[] {220,330,110}, new int[] {110,220,220}, 3));
+	protected Collection<GameTile> chips = new HashSet<GameTile>(b.size()); 
+	//GameTile t = new GameTile(new Polygon(new int[] {220,330,110}, 
+		//	new int[] {110,220,220}, 3)), c;
+	
 	public TheGame(){
-		
+		Iterator<GameTile> tiles = b.iterator();
+		Polygon cir = new Circlegon(5,120);
+		while (tiles.hasNext()){
+			Polygon p = tiles.next().getShape();
+			chips.add( new GameTile( new Polygon( 
+					ArrayHelp.shiftAll(cir.xpoints,(int) MoreMath.average(p.xpoints)), 
+					ArrayHelp.shiftAll(cir.ypoints, (int) MoreMath.average(p.ypoints)), 
+					cir.npoints)));
+		}
+		for (GameTile chip : chips){
+			chip.setColor(Color.red);
+			chip.setLayer(1);
+		}
 		setSize(W,H);
 		setVisible(true);
-		t.setLayer(1);
-		
 	}
 	
 	public void paint(Graphics g){
@@ -28,7 +44,7 @@ public class TheGame extends Frame {
 		while (hexes.hasNext()){
 			pieces.add(hexes.next());
 		}
-		pieces.add(t);
+		pieces.addAll(chips);
 		/*
 		g.setColor(t.color);
 		g.fillPolygon(t.getShape());
@@ -37,7 +53,7 @@ public class TheGame extends Frame {
 		Iterator<GameTile> hexes = b.iterator();
 		*/
 		//int i = 0;
-		t.color = Color.blue;
+		
 		while (!pieces.isEmpty()){
 			//if (i%3==0) g.setColor(Color.GREEN);
 			//else if (i%3 ==1) g.setColor(Color.YELLOW);

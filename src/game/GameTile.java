@@ -1,11 +1,13 @@
+package game;
 import java.awt.Color;
 import java.awt.Polygon;
+import utilities.*;
 
 public class GameTile implements GamePiece {
 
 	protected Polygon shape;
-	public Color color = Color.white;
-	protected String typeName = "";
+	protected Color color = Color.white;
+	public String typeName = "", text = "";
 	protected int layer = 0;
 	
 	public GameTile(Polygon theShape){
@@ -14,8 +16,7 @@ public class GameTile implements GamePiece {
 	
 	public GameTile(Polygon theShape, int xFirst, int yFirst){
 		shape = theShape;
-		shape.xpoints = ArrayHelp.shiftAll(shape.xpoints, xFirst - shape.xpoints[0]);
-		shape.ypoints = ArrayHelp.shiftAll(shape.ypoints, yFirst - shape.ypoints[0]);	
+		shape.translate(xFirst - shape.xpoints[0], yFirst - shape.ypoints[0]);
 	}
 	
 	public GameTile(GameTile tile){
