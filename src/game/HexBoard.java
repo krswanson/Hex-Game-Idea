@@ -1,3 +1,4 @@
+package game;
 import java.awt.Polygon;
 import java.util.Iterator;
 

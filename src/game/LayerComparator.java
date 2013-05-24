@@ -1,3 +1,4 @@
+package game;
 import java.util.Comparator;
 
 public class LayerComparator implements Comparator<GamePiece> {
