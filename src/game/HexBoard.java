@@ -49,6 +49,15 @@ public class HexBoard {
 		return board[col][row];
 	}
 	
+	public GameTile getAt(int x, int y){
+		BoardIterator i = (BoardIterator) iterator();
+		while (i.hasNext()){
+			GameTile current = i.next();
+			if (current.shape.contains(x,y)) return current;
+		}
+		return null;
+	}
+	
 	public boolean removeHex(int row, int col){
 		if (row >= board[col].length) return false;
 		GameTile[] temp = board[col];
@@ -75,6 +84,7 @@ public class HexBoard {
 	public int size(){
 		return tiles;
 	}
+	
 	public Iterator<GameTile> iterator(){
 		return new BoardIterator();
 	}
