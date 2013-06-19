@@ -9,6 +9,7 @@ public class GameTile implements GamePiece {
 	protected Color color = Color.white;
 	public String typeName = "", text = "";
 	protected int layer = 0;
+	public boolean used = false;
 	
 	public GameTile(Polygon theShape){
 		this(theShape, theShape.xpoints[0], theShape.ypoints[0]);
