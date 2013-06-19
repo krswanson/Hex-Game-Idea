@@ -2,6 +2,8 @@ package game;
 import java.awt.Polygon;
 import java.util.Iterator;
 
+import utilities.MoreMath;
+
 public class HexBoard {
 
 	protected Polygon p;
@@ -50,12 +52,41 @@ public class HexBoard {
 	}
 	
 	public GameTile getAt(int x, int y){
-		BoardIterator i = (BoardIterator) iterator();
-		while (i.hasNext()){
-			GameTile current = i.next();
-			if (current.shape.contains(x,y)) return current;
+		int col = getCol(columns/2,columns,x);
+		if (col == -1) return null;
+		int row = getRow(board[col].length/2, board[col].length, col, y);
+		if (row == -1) return null;
+		return get(row, col);
+	}
+	
+	protected int getRow(int guess, int rows, int col, int y){
+		if (rows <= 0) return -1;
+		else if (guess >= board[col].length) return -1;
+		else if (guess < 0) return -1;
+		else{
+			Polygon current = board[col][guess].shape;
+			if (current.ypoints[0] < y){
+				if (current.ypoints[3] > y) return guess;
+				else return getRow(guess + (rows+3)/4, (rows+1)/2, col, y);
+			}else{
+				return getRow(guess - (rows+3)/4, (rows+1)/2, col, y);
+			}
 		}
-		return null;
+	}
+	
+	protected int getCol(int guess, int cols, int x){
+		if (cols <= 0) return -1;
+		else if (guess >= board.length) return -1;
+		else if (guess < 0) return -1;
+		else{
+			Polygon current = board[guess][0].shape;
+			if (current.xpoints[5] < x){
+				if (current.xpoints[2] > x) return guess;
+				else return getCol(guess+(cols+2)/4, (cols+1)/2, x);
+			}else{
+				return getCol(guess - (cols+2)/4, (cols+1)/2, x);
+			}
+		}
 	}
 	
 	public boolean removeHex(int row, int col){
