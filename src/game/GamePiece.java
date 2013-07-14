@@ -21,4 +21,6 @@ public interface GamePiece {
 	public void setLayer(int layer);
 
 	public Polygon getShape();
+	
+	public String getText();
 }
