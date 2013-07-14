@@ -2,8 +2,6 @@ package game;
 import java.awt.Polygon;
 import java.util.Iterator;
 
-import utilities.MoreMath;
-
 public class HexBoard {
 
 	protected Polygon p;
@@ -11,11 +9,11 @@ public class HexBoard {
 	protected GameTile[][] board;
 	protected int h, w, columns, tiles = 0;
 	
-	public HexBoard(int[] perCol, int winW, int winH){
-		this(perCol, winW, winH, 40, 32);
+	public HexBoard(int[] perCol, int upperLeftX, int upperLeftY){
+		this(perCol, upperLeftX, upperLeftY, 40, 32);
 	}
 	
-	public HexBoard(int[] perCol, int winW, int winH, int hexW, int hexH){
+	public HexBoard(int[] perCol, int upperLeftX, int upperLeftY, int hexW, int hexH){
 		columns = perCol.length;
 		board = new GameTile[columns][];
 		h = hexH;
@@ -23,8 +21,7 @@ public class HexBoard {
 		int[] xpoints = {w/4,w-w/4,w,w-w/4,w/4,0};
 		int[] ypoints = {0,0,h/2,h,h,h/2};
 		p = new Polygon(xpoints, ypoints, 6);
-		p.translate((int)(winW/2-w*columns/2+.5*w)/1, 
-				(int)(winH/2-h*perCol[(int)(columns/2)]/2+.5*h));
+		p.translate(upperLeftX, upperLeftY);
 		
 		//Each row array has its own length
 		int i, correction = 0;
