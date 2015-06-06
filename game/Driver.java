@@ -3,11 +3,16 @@ package game;
 public class Driver {
 
 	public static void main(String[] args) {
-		int W = 600, H = 400;
+		int W = 750, H = 720;
 		int option = 0;
+		int rows = 16, cols = 16;
+		int[] arr = new int[cols];
 		TheGame g;
 		if (option == 0){
-			g = new TheGame(new HexBoard(new int[] {6,6,6,6,6,6,6,6,6,6,6,6}, W/6, H/6), W, H);
+			for (int i = 0; i < cols; i++) {
+				arr[i] = rows;
+			}
+			g = new TheGame(new HexBoard(arr, W/6, H/16), W, H);
 		}else{
 			H = 600;
 			g = new TheGame(new SquareBoard(new int[] {20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20},

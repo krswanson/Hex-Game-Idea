@@ -24,6 +24,7 @@ public class TheGame extends Frame {
 	protected ConcurrentLinkedQueue<PicTextCard> terrainCards = 
 			new ConcurrentLinkedQueue<PicTextCard>();
 	protected TileTypeTable<String, Color> terrain = new TileTypeTable<String, Color>();
+	protected GameTile playerTurnMarker;
 	
 	public TheGame(TileBoard theBoard, int windowW, int windowH){
 		board = theBoard;
@@ -78,6 +79,10 @@ public class TheGame extends Frame {
 				player.add(s);	
 			}
 			thePlayers.add(player);
+			playerTurnMarker = new GameTile(new Polygon(
+					new int[] {W/4, W/4, W/3, W/3},
+					new int[] {H*15/16, H*7/8, H*7/8, H*15/16}, 4));
+			
 		}
 		
 	}
@@ -112,6 +117,10 @@ public class TheGame extends Frame {
 		}
 		for (int i = 0; i < nPlayers; i++){
 			ConcurrentLinkedQueue<GameTile> temp = thePlayers.poll();
+			if (i == 0) { // Get current player color
+				playerTurnMarker.setColor(temp.peek().getColor());
+				pieces.add(playerTurnMarker);
+			}
 			pieces.addAll(new ConcurrentLinkedQueue<GameTile>(temp));
 			thePlayers.add(temp);
 		}
