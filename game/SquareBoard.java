@@ -1,24 +1,24 @@
 package game;
 import java.awt.Polygon;
 
-public class HexBoard extends TileBoard {
+public class SquareBoard extends TileBoard {
 
-	public HexBoard(int[] perCol, int upperLeftX, int upperLeftY){
+	public SquareBoard(int[] perCol, int upperLeftX, int upperLeftY){
 		this(perCol, upperLeftX, upperLeftY, 40, 32);
 	}
 	
-	public HexBoard(int[] perCol, int upperLeftX, int upperLeftY, int hexW, int hexH){
+	public SquareBoard(int[] perCol, int upperLeftX, int upperLeftY, int tileW, int tileH){
 		columns = perCol.length;
 		board = new GameTile[columns][];
-		h = hexH;
-		w = hexW;
-		int[] xpoints = {w/4,w-w/4,w,w-w/4,w/4,0};
-		int[] ypoints = {0,0,h/2,h,h,h/2};
-		p = new Polygon(xpoints, ypoints, 6);
+		h = tileH;
+		w = tileW;
+		int[] xpoints = {0,w,w,0};
+		int[] ypoints = {0,0,h,h};
+		p = new Polygon(xpoints, ypoints, 4);
 		p.translate(upperLeftX, upperLeftY);
 		
 		//Each row array has its own length
-		int i, correction = 0;
+		int i;
 		for (int j = 0; j < columns; j++){
 			GameTile[] thisCol = new GameTile[perCol[j]];
 			for (i = 0; i < perCol[j]; i++){
@@ -27,18 +27,11 @@ public class HexBoard extends TileBoard {
 				tiles++;
 			}
 			board[j] = thisCol;
-			
-			if (j == columns-1) break;
-			else if (perCol[j] < perCol[j+1]) correction = -h/2;
-			else {// column is == or >, if it is ==, then do the opposite of what was just done
-				if (perCol[j] == perCol[j+1] && correction == h/2) correction = -h/2;
-				else correction = h/2;
-			}
-			p.translate(w*3/4, -i*h + correction);
+			p.translate(w, -i*h);
 		}
 	}
 	
-	@Override 
+	@Override
 	public int getRow(int guess, int rows, int col, int y){
 		if (rows <= 0) return -1;
 		else if (guess >= board[col].length) return -1;
@@ -54,16 +47,22 @@ public class HexBoard extends TileBoard {
 		}
 	}
 	
-	@Override 
+	@Override
 	public int getCol(int guess, int cols, int x){
+		System.out.println("zero "+ guess + " " + cols);
+		
 		if (cols <= 0) return -1;
 		else if (guess >= board.length) return -1;
 		else if (guess < 0) return -1;
 		else{
 			Polygon current = board[guess][0].shape;
-			if (current.xpoints[5] < x){
-				if (current.xpoints[2] > x) return guess;
-				else return getCol(guess+(cols+2)/4, cols/2, x);
+			if (current.xpoints[0] < x){
+				System.out.println("one " + guess + " " + cols);
+				if (current.xpoints[1] > x) return guess;
+				else {
+					System.out.println("two "+ guess + " " + cols);
+					return getCol(guess+(cols+2)/4, cols/2, x);
+				}
 			}else{
 				return getCol(guess - (cols+2)/4, cols/2, x);
 			}
