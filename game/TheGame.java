@@ -18,6 +18,7 @@ public class TheGame extends Frame {
 
 	protected int nPlayers = 2, nSettlements = 16;
 	protected static int W, H;
+	protected static int CARD_OFFSET = 60, CARD_H = 70, CARD_W = 50;
 	public static TileBoard board;
 	protected ConcurrentLinkedQueue<ConcurrentLinkedQueue<GameTile>> thePlayers = 
 			new ConcurrentLinkedQueue<ConcurrentLinkedQueue<GameTile>>();
@@ -79,18 +80,17 @@ public class TheGame extends Frame {
 				player.add(s);	
 			}
 			thePlayers.add(player);
-			playerTurnMarker = new GameTile(new Polygon(
-					new int[] {W/4, W/4, W/3, W/3},
-					new int[] {H*15/16, H*7/8, H*7/8, H*15/16}, 4));
-			
+			Polygon circle = new Circlegon(CARD_W, W/2, H - CARD_OFFSET);
+			playerTurnMarker = new GameTile(circle);	
 		}
 		
 	}
+	
 	protected void setupTerrain(){
 		Object[] types = terrain.keySet().toArray();
 		for (int i = 0; i < types.length; i++){
 			if (terrain.getFlag((String) types[i], "card") == 1){
-				PicTextCard card = new PicTextCard(70,50, W/2, H-50);
+				PicTextCard card = new PicTextCard(CARD_H, CARD_W, W/2, H - CARD_OFFSET, (String) types[i]);
 				card.setType((String) types[i], terrain.get(types[i]));
 				card.setBackgroundColor(Color.gray);
 				terrainCards.add(card);
@@ -108,6 +108,11 @@ public class TheGame extends Frame {
 		return Math.random();
 	}
 	
+	/**
+	 * Draws the board tiles, the players' settlements, the current card, and the 
+	 * marker for whose turn it is.  It does this by putting each item in a queue, then
+	 * drawing each item with its stored color and a black border.
+	 */
 	public void paint(Graphics g){//need to get cards and their text to appear
 		PriorityQueue<GamePiece> pieces = new 
 				PriorityQueue<GamePiece>(board.size(), new LayerComparator());

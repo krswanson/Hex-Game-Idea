@@ -7,8 +7,9 @@ import java.util.HashSet;
 public class PicTextCard {
 
 	private GameTile cardRect, picRect;
+	String text;
 	
-	public PicTextCard(int h, int w, int centerX, int centerY){
+	public PicTextCard(int h, int w, int centerX, int centerY, String text){
 		picRect = new GameTile(new Polygon(new int[]
 				{centerX-w/2+w/8, centerX+w/2-w/8, centerX+w/2-w/8, centerX-w/2+w/8},
 				new int[] {centerY-h/2+h/8, centerY-h/2+h/8, centerY, centerY}, 4));
@@ -16,6 +17,7 @@ public class PicTextCard {
 				new int[] {centerY-h/2, centerY-h/2, centerY+h/2, centerY+h/2}, 4));
 		cardRect.setLayer(1);
 		picRect.setLayer(2);
+		this.text = text;
 	}
 	
 	
@@ -40,6 +42,14 @@ public class PicTextCard {
 		cardRect.setColor(background);
 	}
 
+	public String getText() {
+		return text;
+	}
+	
+	public void setText(String theText) {
+		text = theText;
+	}
+	
 	public int getLayer() {
 		return cardRect.getLayer();
 	}

@@ -14,9 +14,23 @@ public class Circlegon extends Polygon {
 		super(calCircleX(radius, Math.PI/180), calCircleY(radius, Math.PI/180), 360);
 	}
 	
-	public Circlegon(int radius, int npoints) {
+	public Circlegon(int radius, int shiftX,int shiftY) {
+		super(calCircleX(radius, Math.PI/180), calCircleY(radius, Math.PI/180), 360);
+		this.translate(shiftX, shiftY);
+	}
+	
+	/**
+	 * 
+	 * @param radius the radius of the circle
+	 * @param shiftX how far to shift the cirlce to the left
+	 * @param shiftY how far to shift the circle down
+	 * @param npoints how many "sides" the circle will have (how finely grained it looks),
+	 * so higher numbers look more circular (default in other constructors is 180)
+	 */
+	public Circlegon(int radius, int shiftX, int shiftY, int npoints) {
 		super(calCircleX(radius, 2*Math.PI/npoints), calCircleY(radius, 
 				2*Math.PI/npoints), npoints);
+		this.translate(shiftX, shiftY);
 	}
 	
 	/**
@@ -54,7 +68,7 @@ public class Circlegon extends Polygon {
 	}
 
 	public static void main(String[] args){
-		Polygon p = new Circlegon(100,50);
+		Polygon p = new Circlegon(100, 0, 0, 50);
 		for (int i = 0; i < p.npoints; i++){
 			System.out.println(i + " " + p.xpoints[i] + " " + p.ypoints[i]);
 		}
