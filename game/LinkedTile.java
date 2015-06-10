@@ -1,67 +1,37 @@
 package game;
 
-import java.awt.Color;
 import java.awt.Polygon;
 import java.util.HashSet;
 
-public class LinkedTile implements GamePiece {
+public class LinkedTile extends GameTile {
 
-	protected Color color = Color.WHITE;
-	protected int layer = 0;
-	protected Polygon shape;
-	protected HashSet<LinkedTile> adjacent;
+	protected HashSet<GameTile> adjacent;
 	
-	public LinkedTile(){
-		adjacent = new HashSet<LinkedTile>();
+	public LinkedTile(Polygon tileShape){
+		super(tileShape);
+		adjacent = new HashSet<GameTile>();
 	}
 	
-	public LinkedTile(Polygon tileShape, HashSet<LinkedTile> adjacentTiles){
-		shape = tileShape;
+	/**
+	 * 
+	 * @param tileShape The Polygon representing this tile
+	 * @param adjacentTiles The set of tiles that are to be marked as adjacent to this tile
+	 */
+	public LinkedTile(Polygon tileShape, HashSet<GameTile> adjacentTiles){
+		super(tileShape);
 		adjacent.addAll(adjacentTiles);
 	}
 	
-	public void addAdjacent(LinkedTile tile){
+	public void addAdjacent(GameTile tile){
 		adjacent.add(tile);
 	}
 	
-	public boolean removeAdjacent(LinkedTile tile){
+	public boolean removeAdjacent(GameTile tile){
 		return adjacent.remove(tile);
 	}
 	
-	public HashSet<LinkedTile> getAdjacent(){
+	public HashSet<GameTile> getAdjacent(){
 		return adjacent;
 	}
-	@Override
-	public Color getColor() {
-		return color;
-	}
 	
-	public void setColor(Color c){
-		color = c;
-	}
-
-	@Override
-	public int getLayer() {
-		return layer;
-	}
-
-	@Override
-	public void setLayer(int layer) {
-		this.layer = layer;
-	}
-
-	@Override
-	public Polygon getShape() {
-		return shape;
-	}
-
-	public void setShape(Polygon p){
-		shape = p;
-	}
-
-	@Override
-	public String getText() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

@@ -1,13 +1,13 @@
 package game;
 import java.awt.Polygon;
 
-public class SquareBoard extends TileBoard {
+public class RectBoard extends TileBoard {
 
-	public SquareBoard(int[] perCol, int upperLeftX, int upperLeftY){
+	public RectBoard(int[] perCol, int upperLeftX, int upperLeftY){
 		this(perCol, upperLeftX, upperLeftY, 40, 32);
 	}
 	
-	public SquareBoard(int[] perCol, int upperLeftX, int upperLeftY, int tileW, int tileH){
+	public RectBoard(int[] perCol, int upperLeftX, int upperLeftY, int tileW, int tileH){
 		columns = perCol.length;
 		board = new GameTile[columns][];
 		h = tileH;
@@ -49,7 +49,7 @@ public class SquareBoard extends TileBoard {
 	
 	@Override
 	public int getCol(int guess, int cols, int x){
-		System.out.println("zero "+ guess + " " + cols);
+		//System.out.println("zero "+ guess + " " + cols);
 		
 		if (cols <= 0) return -1;
 		else if (guess >= board.length) return -1;
@@ -57,10 +57,10 @@ public class SquareBoard extends TileBoard {
 		else{
 			Polygon current = board[guess][0].shape;
 			if (current.xpoints[0] < x){
-				System.out.println("one " + guess + " " + cols);
+			//	System.out.println("one " + guess + " " + cols);
 				if (current.xpoints[1] > x) return guess;
 				else {
-					System.out.println("two "+ guess + " " + cols);
+				//	System.out.println("two "+ guess + " " + cols);
 					return getCol(guess+(cols+2)/4, cols/2, x);
 				}
 			}else{

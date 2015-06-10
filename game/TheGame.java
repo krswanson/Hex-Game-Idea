@@ -6,10 +6,13 @@ import java.awt.Graphics;
 import java.awt.Polygon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
 import utilities.*;
 
 
@@ -26,6 +29,7 @@ public class TheGame extends Frame {
 			new ConcurrentLinkedQueue<PicTextCard>();
 	protected TileTypeTable<String, Color> terrain = new TileTypeTable<String, Color>();
 	protected GameTile playerTurnMarker;
+	protected boolean firstTurn;
 	
 	public TheGame(TileBoard theBoard, int windowW, int windowH){
 		board = theBoard;
@@ -35,14 +39,14 @@ public class TheGame extends Frame {
 		terrain.put("Pasture", Color.green);
 		terrain.put("Flowers", Color.pink);
 		terrain.put("Forest", new Color(10,150,20));
-		terrain.put("Canyon", new Color(150,100,30));
+		terrain.put("Canyon", new Color(180,130,30));
 		Set<String> temp = terrain.keySet();
 		for (String t : temp){
 			terrain.putFlag(t, "card", true);
 		}
-		terrain.put("Water", new Color(120, 140, 245));
+		terrain.put("Water", new Color(140, 165, 255));
 		terrain.putFlag("Water", "card", false);
-		terrain.put("Mountain", new Color(140,130,120));
+		terrain.put("Mountain", new Color(100,100,80));
 		terrain.putFlag("Mountain", "card", false);
 		
 		reset();
@@ -53,9 +57,28 @@ public class TheGame extends Frame {
 		setVisible(true);
 		MyMouseAdapter mouse = new MyMouseAdapter();
 		addMouseListener(mouse);
-		addMouseMotionListener(mouse);
+		addMouseMotionListener(mouse);	
+		
+		// Seem to need both this and processWindowEvent() for it to exit when the X is clicked 
+		// Source: http://java-demos.blogspot.com/2012/10/close-awt-frame-in-java-using-windowlistener.html
+		addWindowListener(new WindowAdapter() {
+			@SuppressWarnings("unused")
+			public void WindowClosing(WindowEvent e) {
+				dispose();
+				System.exit(0);
+			}
+		});
 	}
 	
+	// End program when X button is clicked
+	// Source: https://www.clear.rice.edu/comp310/JavaResources/frame_close.html
+    protected void processWindowEvent(WindowEvent e) {
+        super.processWindowEvent(e);
+        if(e.getID() == WindowEvent.WINDOW_CLOSING) {
+            System.exit(0);
+        }
+    }
+	    
 	public void reset(){
 		setupTerrain();
 		setupPlayers();
@@ -63,6 +86,7 @@ public class TheGame extends Frame {
 	
 	protected void setupPlayers(){
 		for (int j = 0; j < nPlayers; j++){
+			firstTurn = true;
 			ConcurrentLinkedQueue<GameTile> player = new ConcurrentLinkedQueue<GameTile>();
 			Color c = Color.blue;
 			int shift = 0;
@@ -80,7 +104,7 @@ public class TheGame extends Frame {
 				player.add(s);	
 			}
 			thePlayers.add(player);
-			Polygon circle = new Circlegon(CARD_W, W/2, H - CARD_OFFSET);
+			Circlegon circle = new Circlegon(CARD_W, W/2, H - CARD_OFFSET);
 			playerTurnMarker = new GameTile(circle);	
 		}
 		
@@ -146,13 +170,16 @@ public class TheGame extends Frame {
 		int x, y, i = 0;	// counter for mouseDragged events
 		
 		/**
-		 * Prints the x and y position of the mouse click to the console
+		 * If the clicked tile is unused, their are still pieces to be played, and the clicked hex
+		 * matches the current card, a settlement of the current player is placed on the clicked hex.
 		 */
 		public void mouseClicked(MouseEvent e) {
 			x = e.getX();
 			y = e.getY();
-			GameTile hex = TheGame.board.getAt(x,y);
-			if (hex != null && !hex.used){
+			int col = board.getCol(x);
+			int row = board.getRow(col, y);
+			GameTile hex = TheGame.board.get(row, col);
+			if (isLegalMove(hex, row, col)){
 				if (hex.getColor().equals(terrainCards.peek().getColor())){
 					GameTile settlement = thePlayers.peek().poll();
 						if (!settlement.used){
@@ -164,11 +191,43 @@ public class TheGame extends Frame {
 							terrainCards.add(terrainCards.poll());
 							repaint();		
 							thePlayers.add(thePlayers.poll());
+							if (firstTurn) updateFirstTurn();
 						}else{}//Exception for a special power
 					}
 				}
 			}
 		
+		/**
+		 * Checks whether there was a switch from the first turn to the second turn (each player gets a first turn).
+		 * Updates the firstTurn marker to false if it is no longer the first turn.
+		 * @return false if nothing changed, true if firstTurn was changed from true to false
+		 */
+		public boolean updateFirstTurn() {
+			if (!firstTurn) return false;
+			int playedCount = 0;
+			GameTile s;
+			for (int i = 0; i < thePlayers.peek().size(); i++) {
+				s = thePlayers.peek().poll();
+				if (s.used) playedCount++;
+				thePlayers.peek().add(s);
+			}
+			if (playedCount >= 1) {
+				firstTurn = false;
+				return true;
+			}
+			return false;
+		}
+		
+		private boolean isLegalMove(GameTile hex, int row, int col) {
+			if (hex != null && firstTurn) {
+				return true;
+			} else if (!hex.used) {
+				Set<GameTile> adjacent = board.getAdjacent(row, col);
+				if (adjacent == null) return true; //TODO actually check!
+			}
+			return false;
+		}
+
 		/**
 		 * Sets pressTime to the current system time when the mouse is pressed
 		 */
@@ -185,7 +244,4 @@ public class TheGame extends Frame {
 		}
 	}
 	
-	public static void main(String[] args) {
-	}
-
 }

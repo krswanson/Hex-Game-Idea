@@ -6,10 +6,10 @@ import utilities.*;
 public class GameTile implements GamePiece {
 
 	protected Polygon shape;
-	protected Color color = Color.white;
+	protected Color color = null;
 	protected String text = "";
 	protected int layer = 0;
-	public boolean used = false;
+	public boolean used = false;  //TODO make GamePiece occupiedBy? So don't mark settlements as used, put them on tiles! 
 	
 	public GameTile(Polygon theShape){
 		this(theShape, theShape.xpoints[0], theShape.ypoints[0]);
@@ -65,6 +65,7 @@ public class GameTile implements GamePiece {
 			sameShape(other);
 	}
 	
+	@Override
 	public Polygon getShape(){
 		return shape;
 	}
@@ -72,6 +73,7 @@ public class GameTile implements GamePiece {
 		shape = p;
 	}
 	
+	@Override
 	public Color getColor(){
 		return color;
 	}
@@ -79,6 +81,7 @@ public class GameTile implements GamePiece {
 		color = c;
 	}
 	
+	@Override
 	public int getLayer(){
 		return layer;
 	}
@@ -94,6 +97,7 @@ public class GameTile implements GamePiece {
 		text = s;
 	}
 	
+	/* for testing
 	public static void main(String[] a){
 		GameTile t = new GameTile(new Polygon(new int[] {1,2,0}, new int[] {0,1,1}, 3),4, 4);
 		GameTile u = new GameTile(new Polygon(new int[] {1,2,0}, new int[] {0,1,1}, 3),3, 4);
@@ -105,5 +109,5 @@ public class GameTile implements GamePiece {
 		System.out.println(u.equals(t));
 		System.out.println(u.sameType(t));
 		System.out.println(u.equals(v));
-	}
+	}*/
 }

@@ -1,5 +1,6 @@
 package game;
 import java.awt.Polygon;
+import java.util.HashSet;
 
 public class HexBoard extends TileBoard {
 
@@ -9,7 +10,7 @@ public class HexBoard extends TileBoard {
 	
 	public HexBoard(int[] perCol, int upperLeftX, int upperLeftY, int hexW, int hexH){
 		columns = perCol.length;
-		board = new GameTile[columns][];
+		board = new LinkedTile[columns][];
 		h = hexH;
 		w = hexW;
 		int[] xpoints = {w/4,w-w/4,w,w-w/4,w/4,0};
@@ -20,10 +21,10 @@ public class HexBoard extends TileBoard {
 		//Each row array has its own length
 		int i, correction = 0;
 		for (int j = 0; j < columns; j++){
-			GameTile[] thisCol = new GameTile[perCol[j]];
+			LinkedTile[] thisCol = new LinkedTile[perCol[j]];
 			for (i = 0; i < perCol[j]; i++){
 				p.translate(0, h);
-				thisCol[i] = new GameTile(new Polygon(p.xpoints, p.ypoints, p.npoints));
+				thisCol[i] = new LinkedTile(new Polygon(p.xpoints, p.ypoints, p.npoints));
 				tiles++;
 			}
 			board[j] = thisCol;
@@ -73,8 +74,8 @@ public class HexBoard extends TileBoard {
 	@Override
 	public boolean removeTile(int row, int col) {
 		if (row >= board[col].length) return false;
-		GameTile[] temp = board[col];
-		board[col] = new GameTile[board[col].length-1];
+		LinkedTile[] temp = (LinkedTile[]) board[col];
+		board[col] = new LinkedTile[board[col].length-1];
 		int t = 0, b = 0;
 		while (b < board[col].length){
 			if (t == row){
@@ -87,6 +88,11 @@ public class HexBoard extends TileBoard {
 		}
 		tiles--;
 		return true;
+	}
+	
+	@Override
+	public HashSet<GameTile> getAdjacent(int row, int col) {
+		return ((LinkedTile) get(row, col)).getAdjacent();
 	}
 	
 	public void compress(){

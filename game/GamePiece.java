@@ -20,7 +20,13 @@ public interface GamePiece {
 	 */
 	public void setLayer(int layer);
 
+	/**
+	 * @return The Polygon that outlines this piece
+	 */
 	public Polygon getShape();
 	
+	/**
+	 * @return The text associated with or on this piece
+	 */
 	public String getText();
 }
