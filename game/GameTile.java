@@ -1,6 +1,8 @@
 package game;
 import java.awt.Color;
 import java.awt.Polygon;
+import java.util.HashSet;
+
 import utilities.*;
 
 public class GameTile implements GamePiece {
@@ -8,8 +10,8 @@ public class GameTile implements GamePiece {
 	protected Polygon shape;
 	protected Color color = null;
 	protected String text = "";
-	protected int layer = 0;
-	public boolean used = false;  //TODO make GamePiece occupiedBy? So don't mark settlements as used, put them on tiles! 
+	protected int layer = 0; 
+	public HashSet<GamePiece> onTile = new HashSet<GamePiece>();
 	
 	public GameTile(Polygon theShape){
 		this(theShape, theShape.xpoints[0], theShape.ypoints[0]);
@@ -27,8 +29,23 @@ public class GameTile implements GamePiece {
 		this.color = tile.color;
 	}
 	
+	public void putPieceOn(GamePiece on) {
+		onTile.add(on);
+	}
+	
+	public boolean hasPieceOn(){
+		return !onTile.isEmpty();
+	}
+	
+	public boolean removePieceFrom(GamePiece on) {
+		return onTile.remove(on);
+	}
+	
+	public HashSet<GamePiece> getPiecesOn() {
+		return onTile;
+	}
+	
 	/**
-	 * 
 	 * @param other another GameTile
 	 * @return true if the other has the same shape, location, and sameType() returns true
 	 */

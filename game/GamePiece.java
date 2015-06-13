@@ -29,4 +29,5 @@ public interface GamePiece {
 	 * @return The text associated with or on this piece
 	 */
 	public String getText();
+	
 }

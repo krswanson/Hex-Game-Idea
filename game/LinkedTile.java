@@ -5,11 +5,11 @@ import java.util.HashSet;
 
 public class LinkedTile extends GameTile {
 
-	protected HashSet<GameTile> adjacent;
+	protected HashSet<LinkedTile> adjacent;
 	
 	public LinkedTile(Polygon tileShape){
 		super(tileShape);
-		adjacent = new HashSet<GameTile>();
+		adjacent = new HashSet<LinkedTile>();
 	}
 	
 	/**
@@ -17,20 +17,20 @@ public class LinkedTile extends GameTile {
 	 * @param tileShape The Polygon representing this tile
 	 * @param adjacentTiles The set of tiles that are to be marked as adjacent to this tile
 	 */
-	public LinkedTile(Polygon tileShape, HashSet<GameTile> adjacentTiles){
+	public LinkedTile(Polygon tileShape, HashSet<LinkedTile> adjacentTiles){
 		super(tileShape);
 		adjacent.addAll(adjacentTiles);
 	}
 	
-	public void addAdjacent(GameTile tile){
+	public void addAdjacent(LinkedTile tile){
 		adjacent.add(tile);
 	}
 	
-	public boolean removeAdjacent(GameTile tile){
+	public boolean removeAdjacent(LinkedTile tile){
 		return adjacent.remove(tile);
 	}
 	
-	public HashSet<GameTile> getAdjacent(){
+	public HashSet<LinkedTile> getAdjacent(){
 		return adjacent;
 	}
 	

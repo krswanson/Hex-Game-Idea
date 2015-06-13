@@ -17,7 +17,7 @@ public class Driver {
 			H = 600;
 			W = 800;
 			for (int i = 0; i < cols; i++) {
-				arr[i] = rows;
+				arr[i] = rows - i % 5;
 			}
 			g = new TheGame(new RectBoard(arr, W/8, H/10, 25, 25), W, H);
 		}

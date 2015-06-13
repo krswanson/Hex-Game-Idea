@@ -9,7 +9,7 @@ public class RectBoard extends TileBoard {
 	
 	public RectBoard(int[] perCol, int upperLeftX, int upperLeftY, int tileW, int tileH){
 		columns = perCol.length;
-		board = new GameTile[columns][];
+		board = new LinkedTile[columns][];
 		h = tileH;
 		w = tileW;
 		int[] xpoints = {0,w,w,0};
@@ -20,15 +20,41 @@ public class RectBoard extends TileBoard {
 		//Each row array has its own length
 		int i;
 		for (int j = 0; j < columns; j++){
-			GameTile[] thisCol = new GameTile[perCol[j]];
+			if (perCol[j] < 1) perCol[j] = 1;
+			LinkedTile[] thisCol = new LinkedTile[perCol[j]];
 			for (i = 0; i < perCol[j]; i++){
 				p.translate(0, h);
-				thisCol[i] = new GameTile(new Polygon(p.xpoints, p.ypoints, p.npoints));
+				thisCol[i] = new LinkedTile(new Polygon(p.xpoints, p.ypoints, p.npoints));
 				tiles++;
 			}
 			board[j] = thisCol;
 			p.translate(w, -i*h);
+			setupAdjacent(j == 0, j);
 		}
+	}
+	
+	/**
+	 * Sets the adjacent LinkedTiles of this column and the previous column to be adjacent
+	 * @param firstCol true if this is the very first column in the board
+	 * @param col the current column to set up adjacency on its tiles
+	 */
+	private void setupAdjacent(boolean firstCol, int col) {
+		int rows = board[col].length;
+		System.out.println(rows);
+		if (!firstCol) {
+			int doPrevRows = board[col-1].length;
+			if (board[col].length < doPrevRows) doPrevRows = board[col].length;
+			for (int i = 0; i < doPrevRows; i++) {
+				System.out.println("row i " + i + "  col " + (col - 1) + " and " + col + " dpr " + doPrevRows);
+				board[col - 1][i].addAdjacent(board[col][i]);
+				board[col][i].addAdjacent(board[col - 1][i]);
+			}
+		} 
+		for (int i = 1; i < rows; i++) {
+			board[col][i].addAdjacent(board[col][i - 1]);
+			board[col][i - 1].addAdjacent(board[col][i]);
+		}
+
 	}
 	
 	@Override

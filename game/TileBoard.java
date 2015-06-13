@@ -8,27 +8,27 @@ public abstract class TileBoard {
 
 	/**
 	 * @p The polygon shape that is used for each tile in the board
-	 * @board Contains all the GameTiles.  Note: it must be arranged columns first, board[columns][rows]
+	 * @board Contains all the LinkedTiles.  Note: it must be arranged columns first, board[columns][rows]
 	 * @h height of tile (used for anything besides constructor?)
 	 * @w width of tile (used for anything besides constructor?)
-	 * @columns The number of columns in the board (the row lengths can vary)
+	 * @columns The number of columns in the board (the row lengths can vary, but must be at least 1)
 	 * @titles The total number of tiles in the board  
 	 */
 	protected Polygon p;
-	protected GameTile[][] board;
+	protected LinkedTile[][] board;
 	protected int h;
 	protected int w;
 	protected int columns;
 	protected int tiles;
 
-	public GameTile get(int row, int col) {
+	public LinkedTile get(int row, int col) {
 		return board[col][row];
 	}
 
 	/**
 	 * @Return The tile at the x-y location on screen
 	 */
-	public GameTile getAt(int x, int y) {
+	public LinkedTile getAt(int x, int y) {
 		int col = getCol(columns/2,columns,x);
 		if (col < 0) return null;
 		int row = getRow(board[col].length/2, board[col].length, col, y);
@@ -87,14 +87,14 @@ public abstract class TileBoard {
 	 * @param col The column index of the tile to find adjacent tiles for
 	 * @return
 	 */
-	public HashSet<GameTile> getAdjacent(int row, int col) {
-		return null;
+	public HashSet<LinkedTile> getAdjacent(int row, int col) {
+		return get(row, col).getAdjacent();
 	}
 	
-	public Iterator<GameTile> iterator() {
+	public Iterator<LinkedTile> iterator() {
 		return new BoardIterator();
 	}
-	protected class BoardIterator implements Iterator<GameTile>{
+	protected class BoardIterator implements Iterator<LinkedTile>{
 		int row, col;
 		
 		public BoardIterator(){
@@ -114,9 +114,9 @@ public abstract class TileBoard {
 		}
 
 		@Override
-		public GameTile next() {
+		public LinkedTile next() {
 			ensureRow();
-			GameTile current = board[col][row];	
+			LinkedTile current = board[col][row];	
 			row++;
 			return current;
 		}

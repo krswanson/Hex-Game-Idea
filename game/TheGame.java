@@ -8,6 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -119,7 +120,7 @@ public class TheGame extends Frame {
 				card.setBackgroundColor(Color.gray);
 				terrainCards.add(card);
 			}
-			Iterator<GameTile> b = board.iterator();
+			Iterator<LinkedTile> b = board.iterator();
 			while (b.hasNext()){
 				Color c = terrain.get(types[ (int) (pickTerrain()*types.length) ]);
 				b.next().setColor(c);
@@ -140,7 +141,7 @@ public class TheGame extends Frame {
 	public void paint(Graphics g){//need to get cards and their text to appear
 		PriorityQueue<GamePiece> pieces = new 
 				PriorityQueue<GamePiece>(board.size(), new LayerComparator());
-		Iterator<GameTile> hexes = board.iterator();
+		Iterator<LinkedTile> hexes = board.iterator();
 		while (hexes.hasNext()){
 			pieces.add(hexes.next());
 		}
@@ -182,12 +183,11 @@ public class TheGame extends Frame {
 			if (isLegalMove(hex, row, col)){
 				if (hex.getColor().equals(terrainCards.peek().getColor())){
 					GameTile settlement = thePlayers.peek().poll();
-						if (!settlement.used){
+						if (true){ //Was if !settlement.used TODO I think I need a player class; I need to check that this settlement is not in the "unused" queue
 							settlement.shape.translate((int) MoreMath.average(hex.shape.xpoints) - (int) MoreMath.average(settlement.shape.xpoints),
 									(int) MoreMath.average(hex.shape.ypoints) - (int) MoreMath.average(settlement.shape.ypoints));
 							thePlayers.peek().add(settlement);
-							hex.used = true;
-							settlement.used = true;
+							hex.putPieceOn(settlement);
 							terrainCards.add(terrainCards.poll());
 							repaint();		
 							thePlayers.add(thePlayers.poll());
@@ -208,7 +208,7 @@ public class TheGame extends Frame {
 			GameTile s;
 			for (int i = 0; i < thePlayers.peek().size(); i++) {
 				s = thePlayers.peek().poll();
-				if (s.used) playedCount++;
+				// TODO if (s.used) playedCount++;
 				thePlayers.peek().add(s);
 			}
 			if (playedCount >= 1) {
@@ -219,11 +219,13 @@ public class TheGame extends Frame {
 		}
 		
 		private boolean isLegalMove(GameTile hex, int row, int col) {
-			if (hex != null && firstTurn) {
-				return true;
-			} else if (!hex.used) {
-				Set<GameTile> adjacent = board.getAdjacent(row, col);
-				if (adjacent == null) return true; //TODO actually check!
+			//	if (hex != null && firstTurn) {
+			//	return true;
+			//} 
+			if (hex != null && !hex.hasPieceOn()) {
+				HashSet<LinkedTile> adjacent = board.getAdjacent(row, col);
+				System.out.println("Size: " + adjacent.size());
+				if (!adjacent.isEmpty()) return true; //TODO actually check!
 			}
 			return false;
 		}

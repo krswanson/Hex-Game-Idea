@@ -1,6 +1,5 @@
 package game;
 import java.awt.Polygon;
-import java.util.HashSet;
 
 public class HexBoard extends TileBoard {
 
@@ -21,6 +20,7 @@ public class HexBoard extends TileBoard {
 		//Each row array has its own length
 		int i, correction = 0;
 		for (int j = 0; j < columns; j++){
+			if (perCol[j] < 1)perCol[j] = 1;
 			LinkedTile[] thisCol = new LinkedTile[perCol[j]];
 			for (i = 0; i < perCol[j]; i++){
 				p.translate(0, h);
@@ -28,6 +28,7 @@ public class HexBoard extends TileBoard {
 				tiles++;
 			}
 			board[j] = thisCol;
+			setupAdjacent(j == 0, j);
 			
 			if (j == columns-1) break;
 			else if (perCol[j] < perCol[j+1]) correction = -h/2;
@@ -37,6 +38,41 @@ public class HexBoard extends TileBoard {
 			}
 			p.translate(w*3/4, -i*h + correction);
 		}
+	}
+	
+	/**
+	 * Sets the adjacent LinkedTiles of this column and the previous column to be adjacent
+	 * @param firstCol true if this is the very first column in the board
+	 * @param col the current column to set up adjacency on its tiles
+	 */
+	private void setupAdjacent(boolean firstCol, int col) {
+		int rows = board[col].length;
+		System.out.println(rows);
+		if (!firstCol) {
+			int doPrevRows = board[col-1].length;
+			if (board[col].length < doPrevRows) doPrevRows = board[col].length;
+			for (int i = 0; i < doPrevRows; i++) {
+				System.out.println("row i " + i + "  col " + (col - 1) + " and " + col + " dpr " + doPrevRows);
+				if (!(i == 0 && (col % 2) == 1)) { // Not top of upShifted column
+					System.out.println("First: row i " + i + "  col " + (col - 1) + " and " + col + " dpr " + doPrevRows);
+					
+					board[col - 1][i].addAdjacent(board[col][i]);
+					board[col][i].addAdjacent(board[col - 1][i]);
+				} // TODO bottom row not working
+				if (!(i == doPrevRows - 1 && !((col % 2) == 0))) { // Not bottom of downshifted colunm
+					System.out.println("Second: row i " + i + "  col " + (col - 1) + " and " + col + " dpr " + doPrevRows);
+					if (i+1 >= doPrevRows) break;
+					board[col - 1][i + 1].addAdjacent(board[col][i]);
+					board[col][i].addAdjacent(board[col - 1][i + 1]);
+				}
+				
+			}
+		} 
+		for (int i = 1; i < rows; i++) {
+			board[col][i].addAdjacent(board[col][i - 1]);
+			board[col][i - 1].addAdjacent(board[col][i]);
+		}
+
 	}
 	
 	@Override 
@@ -90,11 +126,7 @@ public class HexBoard extends TileBoard {
 		return true;
 	}
 	
-	@Override
-	public HashSet<GameTile> getAdjacent(int row, int col) {
-		return ((LinkedTile) get(row, col)).getAdjacent();
-	}
-	
+
 	public void compress(){
 		//TODO
 		System.out.println("The method compress current does nothing.");
