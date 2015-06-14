@@ -47,27 +47,30 @@ public class HexBoard extends TileBoard {
 	 */
 	private void setupAdjacent(boolean firstCol, int col) {
 		int rows = board[col].length;
-		System.out.println(rows);
-		if (!firstCol) {
+		if (!firstCol) { // Get adjacency with previous column
+			// Get the number of rows of the smaller column (if not equal)
 			int doPrevRows = board[col-1].length;
 			if (board[col].length < doPrevRows) doPrevRows = board[col].length;
+			
 			for (int i = 0; i < doPrevRows; i++) {
-				System.out.println("row i " + i + "  col " + (col - 1) + " and " + col + " dpr " + doPrevRows);
-				if (!(i == 0 && (col % 2) == 1)) { // Not top of upShifted column
-					System.out.println("First: row i " + i + "  col " + (col - 1) + " and " + col + " dpr " + doPrevRows);
-					
-					board[col - 1][i].addAdjacent(board[col][i]);
-					board[col][i].addAdjacent(board[col - 1][i]);
-				} // TODO bottom row not working
-				if (!(i == doPrevRows - 1 && !((col % 2) == 0))) { // Not bottom of downshifted colunm
-					System.out.println("Second: row i " + i + "  col " + (col - 1) + " and " + col + " dpr " + doPrevRows);
-					if (i+1 >= doPrevRows) break;
-					board[col - 1][i + 1].addAdjacent(board[col][i]);
-					board[col][i].addAdjacent(board[col - 1][i + 1]);
-				}
+				// Always do row of previous column that is the same row index of this one
+				board[col - 1][i].addAdjacent(board[col][i]);
+				board[col][i].addAdjacent(board[col - 1][i]);
 				
+				if (i == 0 && (col % 2) == 0) continue; // Skip top of upshifted column
+				if (i == doPrevRows - 1 && (col % 2) == 1) continue; // Skip bottom of downshifted colunm
+		
+				// Get the second hex from the previous column
+				if ((col % 2) == 1) { // Downshifted row is adjacent to previous column's next row down
+					board[col - 1][i + 1].addAdjacent(board[col][i]);
+					board[col][i].addAdjacent(board[col - 1][i + 1]);				
+				} else { // Upshifted row is adjacent to previous column's next row up
+					board[col - 1][i - 1].addAdjacent(board[col][i]);
+					board[col][i].addAdjacent(board[col - 1][i - 1]);
+				}
 			}
 		} 
+		// Get adjacency within current column
 		for (int i = 1; i < rows; i++) {
 			board[col][i].addAdjacent(board[col][i - 1]);
 			board[col][i - 1].addAdjacent(board[col][i]);
